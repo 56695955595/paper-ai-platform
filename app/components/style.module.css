@@ -1,13 +1,17 @@
 .appIcon {
-  width: 32px;
-  height: 32px;
-  background: url(./icons/app-icon.svg) center center no-repeat;
-  background-size: contain;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 100%) center center no-repeat;
+  background-size: 72%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.18);
 }
 
 .starIcon {
-  width: 16px;
-  height: 16px;
-  background: url(./icons/star.svg) center center no-repeat;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #4f7cff 0%, #7c3aed 100%) center center no-repeat;
   background-size: contain;
+  filter: drop-shadow(0 4px 8px rgba(79, 124, 255, 0.25));
 }

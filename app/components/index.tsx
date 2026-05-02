@@ -496,7 +496,56 @@ const TextGeneration = () => {
               <div className='mt-2 text-xs text-gray-500'>{APP_INFO.description}</div>
             )}
           </div>
+<div className={s.heroBanner}>
+  <div className={s.heroGrid}></div>
 
+  <div className={s.heroTopRow}>
+    <div className={s.heroBadge}>Academic AI Suite</div>
+    <div className={s.heroMiniTag}>高校论文优化 · 智能平台</div>
+  </div>
+
+  <div className={s.heroTitleWrap}>
+    <div className={s.heroLogoBox}>
+      <div className={s.heroLogoCore}></div>
+    </div>
+
+    <div className={s.heroTextWrap}>
+      <h1 className={s.heroTitle}>高校论文智能优化平台</h1>
+      <p className={s.heroDesc}>
+        面向高校论文场景的结构诊断、内容优化、格式规范化与智能润色系统，
+        帮助用户快速生成更规范、更专业、更具学术表达力的论文结果。
+      </p>
+    </div>
+  </div>
+
+  <div className={s.heroTags}>
+    <span>结构诊断</span>
+    <span>学术润色</span>
+    <span>格式合规</span>
+    <span>批量处理</span>
+    <span>智能报告</span>
+  </div>
+
+  <div className={s.heroCardRow}>
+    <div className={s.heroCard}>
+      <div className={s.heroCardLabel}>核心能力</div>
+      <div className={s.heroCardValue}>4 大模块</div>
+      <div className={s.heroCardSub}>结构 / 内容 / 格式 / 表达</div>
+    </div>
+
+    <div className={s.heroCard}>
+      <div className={s.heroCardLabel}>处理模式</div>
+      <div className={s.heroCardValue}>单篇 + 批量</div>
+      <div className={s.heroCardSub}>适合高校论文优化场景</div>
+    </div>
+
+    <div className={s.heroCard}>
+      <div className={s.heroCardLabel}>输出形式</div>
+      <div className={s.heroCardValue}>智能报告</div>
+      <div className={s.heroCardSub}>一键生成优化建议与结果</div>
+    </div>
+  </div>
+</div>
           <TabHeader
             items={[
               { id: 'create', name: t('app.generation.tabs.create') },

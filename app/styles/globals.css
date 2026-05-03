@@ -904,3 +904,70 @@ form,
 .h-screen > div:last-child > div {
   min-height: 1100px !important;
 }
+/* =========================================================
+   修复长页面后的表单遮挡问题 + 放大填写区域
+========================================================= */
+
+/* 左侧区域加宽一点，让填写区不那么挤 */
+.w-screen > div:first-child,
+.h-screen > div:first-child {
+  width: 440px !important;
+  min-width: 440px !important;
+  padding-bottom: 220px !important;
+}
+
+/* 右侧区域跟着自适应 */
+.w-screen > div:last-child,
+.h-screen > div:last-child {
+  flex: 1 !important;
+}
+
+/* 左侧内部内容不要被底部版权压住 */
+.w-screen > div:first-child > div,
+.h-screen > div:first-child > div {
+  padding-bottom: 120px !important;
+}
+
+/* 底部版权不要悬浮压住表单 */
+footer,
+[class*="copyright"] {
+  position: relative !important;
+  margin-top: 60px !important;
+  padding-bottom: 40px !important;
+}
+
+/* 表单整体加大间距 */
+form,
+[class*="run-once"],
+[class*="RunOnce"] {
+  padding-bottom: 140px !important;
+}
+
+/* 输入项之间更舒展 */
+label {
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+/* 输入框高度更像正式平台 */
+input,
+textarea,
+[role="combobox"],
+[class*="select"],
+[class*="input"] {
+  min-height: 46px !important;
+}
+
+/* 上传文件区域不要和版权重叠 */
+[class*="file"],
+[class*="upload"],
+[class*="Upload"] {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+/* 清空 / 运行按钮区域留出底部空间 */
+button {
+  position: relative;
+  z-index: 4;
+}

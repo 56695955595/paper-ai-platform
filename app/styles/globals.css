@@ -758,3 +758,70 @@ button:active {
   background: rgba(99, 102, 241, 0.16);
   color: #111827;
 }
+/* =========================================================
+   页面纵向扩展：允许上下滚动，让平台排版更舒展
+========================================================= */
+
+/* 取消一屏强压缩，让页面可以自然变长 */
+html,
+body {
+  min-height: 100% !important;
+  height: auto !important;
+  overflow-y: auto !important;
+}
+
+/* 解除模板中可能存在的满屏固定高度限制 */
+.w-screen,
+.h-screen,
+.min-h-screen {
+  min-height: 100vh !important;
+  height: auto !important;
+}
+
+/* 让主容器允许内容撑开 */
+body > div,
+main,
+#__next {
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* 左右主布局允许跟随内容增长 */
+.w-screen,
+.h-screen {
+  overflow: visible !important;
+}
+
+/* 左侧表单区允许显示完整内容，不再被挤成小滚动框 */
+.w-screen > div:first-child,
+.h-screen > div:first-child {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+/* 右侧结果区也允许自然增长 */
+.w-screen > div:last-child,
+.h-screen > div:last-child {
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* 如果内部有强制滚动容器，放开高度 */
+[class*="overflow-y-auto"],
+[class*="overflow-auto"] {
+  max-height: none !important;
+}
+
+/* 让左侧表单整体有更舒服的底部空间 */
+form,
+[class*="form"] {
+  padding-bottom: 80px !important;
+}
+
+/* 页面底部留白，避免最后按钮贴边 */
+body::before {
+  pointer-events: none;
+}

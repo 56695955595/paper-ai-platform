@@ -616,3 +616,164 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* =========================================================
+   第五阶段：压缩左侧展示区，放大用户填写区
+========================================================= */
+
+/* 主 Banner 压缩高度，让表单更靠上 */
+.heroBanner {
+  padding: 18px 18px 16px !important;
+  border-radius: 24px !important;
+  margin-bottom: 14px !important;
+}
+
+/* Banner 顶部标签压缩 */
+.heroTopRow {
+  margin-bottom: 12px !important;
+}
+
+.heroBadge,
+.heroMiniTag {
+  padding: 6px 10px !important;
+  font-size: 10px !important;
+}
+
+/* Banner 标题区压缩 */
+.heroTitleWrap {
+  gap: 12px !important;
+}
+
+.heroLogoBox {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  border-radius: 15px !important;
+}
+
+.heroLogoCore {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.heroTitle {
+  font-size: 22px !important;
+  line-height: 1.15 !important;
+}
+
+.heroDesc {
+  margin-top: 8px !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+}
+
+/* 标签区缩小 */
+.heroTags {
+  margin-top: 12px !important;
+  gap: 8px !important;
+}
+
+.heroTags span {
+  padding: 7px 10px !important;
+  font-size: 11px !important;
+}
+
+/* 三张能力卡压缩 */
+.heroCardRow {
+  margin-top: 12px !important;
+  gap: 8px !important;
+}
+
+.heroCard {
+  padding: 12px 12px 10px !important;
+  border-radius: 16px !important;
+}
+
+.heroCardLabel {
+  font-size: 10px !important;
+  margin-bottom: 5px !important;
+}
+
+.heroCardValue {
+  font-size: 16px !important;
+}
+
+.heroCardSub {
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
+
+/* AI 论文处理引擎压缩 */
+.aiWorkflowPanel {
+  padding: 14px 14px 12px !important;
+  border-radius: 20px !important;
+  margin-bottom: 14px !important;
+}
+
+.aiWorkflowHeader {
+  margin-bottom: 12px !important;
+}
+
+.aiWorkflowEyebrow {
+  font-size: 10px !important;
+  margin-bottom: 4px !important;
+}
+
+.aiWorkflowTitle {
+  font-size: 15px !important;
+}
+
+.aiWorkflowStatus {
+  padding: 5px 8px !important;
+  font-size: 11px !important;
+}
+
+.aiWorkflowLine {
+  gap: 6px !important;
+}
+
+.aiWorkflowItem {
+  padding: 10px 8px !important;
+  border-radius: 14px !important;
+}
+
+.aiWorkflowItem strong {
+  font-size: 11px !important;
+  margin-bottom: 4px !important;
+}
+
+.aiWorkflowItem span {
+  font-size: 10px !important;
+}
+
+/* 表单区域更突出 */
+[role="tablist"],
+[class*="tab"] {
+  margin-top: 8px !important;
+}
+
+/* 表单标签更清楚 */
+label {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #172033 !important;
+}
+
+/* 输入框更宽更有质感 */
+input,
+textarea,
+[role="combobox"],
+[class*="input"],
+[class*="select"] {
+  min-height: 48px !important;
+  border-radius: 16px !important;
+}
+
+/* 运行按钮更明显 */
+button[type="submit"],
+button[class*="bg-primary"],
+button[class*="bg-blue"] {
+  min-height: 42px !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+  border-radius: 14px !important;
+}

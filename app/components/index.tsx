@@ -546,6 +546,37 @@ const TextGeneration = () => {
     </div>
   </div>
 </div>
+          <div className={s.aiWorkflowPanel}>
+  <div className={s.aiWorkflowHeader}>
+    <div>
+      <div className={s.aiWorkflowEyebrow}>AI Thesis Engine</div>
+      <div className={s.aiWorkflowTitle}>论文智能处理引擎</div>
+    </div>
+    <div className={s.aiWorkflowStatus}>
+      <span></span>
+      Ready
+    </div>
+  </div>
+
+  <div className={s.aiWorkflowLine}>
+    <div className={s.aiWorkflowItem}>
+      <strong>01</strong>
+      <span>规范匹配</span>
+    </div>
+    <div className={s.aiWorkflowItem}>
+      <strong>02</strong>
+      <span>结构诊断</span>
+    </div>
+    <div className={s.aiWorkflowItem}>
+      <strong>03</strong>
+      <span>内容优化</span>
+    </div>
+    <div className={s.aiWorkflowItem}>
+      <strong>04</strong>
+      <span>格式合规</span>
+    </div>
+  </div>
+</div>
           <TabHeader
             items={[
               { id: 'create', name: t('app.generation.tabs.create') },

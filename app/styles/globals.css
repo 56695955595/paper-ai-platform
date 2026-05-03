@@ -825,3 +825,82 @@ form,
 body::before {
   pointer-events: none;
 }
+/* =========================================================
+   强制长页面模式：让页面真正可以向下滚动
+========================================================= */
+
+/* 整个页面至少拉长到 1400px */
+html,
+body {
+  min-height: 1400px !important;
+  height: auto !important;
+  overflow-y: auto !important;
+}
+
+/* Next 根容器也拉长 */
+body > div,
+main,
+#__next {
+  min-height: 1400px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* 主页面容器拉长 */
+.w-screen,
+.h-screen,
+.min-h-screen {
+  min-height: 1400px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* 左侧输入区拉长，给表单足够空间 */
+.w-screen > div:first-child,
+.h-screen > div:first-child {
+  min-height: 1400px !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding-bottom: 160px !important;
+}
+
+/* 右侧结果区也拉长，不要一屏空白 */
+.w-screen > div:last-child,
+.h-screen > div:last-child {
+  min-height: 1400px !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding-bottom: 160px !important;
+}
+
+/* 处理模板里可能写死的高度 */
+[class*="h-screen"],
+[class*="h-[100vh"],
+[class*="h-[calc"],
+[class*="max-h-screen"],
+[class*="max-h-[calc"] {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 1400px !important;
+}
+
+/* 让内部滚动容器不再把表单卡住 */
+[class*="overflow-y-auto"],
+[class*="overflow-auto"],
+[class*="overflow-hidden"] {
+  overflow: visible !important;
+}
+
+/* 给表单区域留足空间 */
+form,
+[class*="form"],
+[class*="RunOnce"],
+[class*="run-once"] {
+  padding-bottom: 180px !important;
+}
+
+/* 让右侧大结果框更像长页面工作区 */
+.w-screen > div:last-child > div,
+.h-screen > div:last-child > div {
+  min-height: 1100px !important;
+}

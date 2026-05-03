@@ -758,3 +758,132 @@ button:active {
   background: rgba(99, 102, 241, 0.16);
   color: #111827;
 }
+/* =========================================================
+   右侧 AI 论文报告工作台：填充空白区，增强产品完成度
+========================================================= */
+
+/* 右侧整体变成高级工作区 */
+.w-screen > div:last-child,
+.h-screen > div:last-child {
+  position: relative !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 72% 18%, rgba(99, 102, 241, 0.18), transparent 30%),
+    radial-gradient(circle at 28% 75%, rgba(14, 165, 233, 0.12), transparent 34%),
+    linear-gradient(135deg, #f8fbff 0%, #f1f5ff 48%, #eef2ff 100%) !important;
+}
+
+/* 隐藏原来太弱的空状态补充文字 */
+.w-screen > div:last-child::after,
+.h-screen > div:last-child::after {
+  content: none !important;
+}
+
+/* 右侧主预览卡片 */
+.w-screen > div:last-child::before,
+.h-screen > div:last-child::before {
+  content:
+    "AI 论文报告工作台\A"
+    "Academic Paper Intelligence Console\A\A"
+    "01  学校规范匹配     已接入高校论文格式要求\A"
+    "02  结构诊断报告     自动识别章节完整性与逻辑问题\A"
+    "03  学术表达优化     优化摘要、正文与结论表达\A"
+    "04  格式合规检查     检查标题、图表、引用与参考文献\A"
+    "05  结果文件生成     支持生成优化报告与导出结果\A\A"
+    "等待上传论文后，系统将在此生成结构化诊断结果。";
+  white-space: pre-line;
+  position: absolute;
+  left: 7%;
+  top: 18%;
+  width: 560px;
+  min-height: 430px;
+  padding: 34px 36px;
+  border-radius: 34px;
+  color: #172033;
+  font-size: 15px;
+  line-height: 2.05;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(245,248,255,0.82));
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow:
+    0 34px 80px rgba(37, 99, 235, 0.14),
+    0 14px 38px rgba(15, 23, 42, 0.07),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  backdrop-filter: blur(22px);
+  z-index: 2;
+}
+
+/* 右侧加一个装饰性报告封面 */
+.w-screen > div:last-child > div::after,
+.h-screen > div:last-child > div::after {
+  content: "PDF\A论文优化报告\A\A结构诊断\A格式合规\A学术润色\A参考文献检查";
+  white-space: pre-line;
+  position: absolute;
+  right: 8%;
+  bottom: 12%;
+  width: 250px;
+  height: 330px;
+  padding: 28px;
+  border-radius: 28px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 2;
+  font-weight: 800;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,255,0.86));
+  border: 1px solid rgba(148, 163, 184, 0.20);
+  box-shadow:
+    0 28px 70px rgba(79, 70, 229, 0.13),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  transform: rotate(-3deg);
+  z-index: 2;
+}
+
+/* 右侧增加科技光圈 */
+.w-screen > div:last-child > div::before,
+.h-screen > div:last-child > div::before {
+  content: "";
+  position: absolute;
+  right: 12%;
+  top: 18%;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(99,102,241,0.18), transparent 62%);
+  filter: blur(4px);
+  z-index: 1;
+}
+
+/* 让原本的小空态图标别抢视觉 */
+.w-screen > div:last-child [class*="empty"],
+.h-screen > div:last-child [class*="empty"],
+.w-screen > div:last-child [class*="no-data"],
+.h-screen > div:last-child [class*="no-data"],
+.w-screen > div:last-child [class*="noData"],
+.h-screen > div:last-child [class*="noData"] {
+  opacity: 0.25 !important;
+}
+
+/* 右侧顶部标题更像产品区 */
+.w-screen > div:last-child h1,
+.w-screen > div:last-child h2,
+.w-screen > div:last-child h3,
+.h-screen > div:last-child h1,
+.h-screen > div:last-child h2,
+.h-screen > div:last-child h3 {
+  position: relative;
+  z-index: 3;
+}
+
+/* 小屏幕不显示复杂装饰，避免乱 */
+@media (max-width: 1000px) {
+  .w-screen > div:last-child::before,
+  .h-screen > div:last-child::before,
+  .w-screen > div:last-child > div::after,
+  .h-screen > div:last-child > div::after {
+    display: none !important;
+  }
+}

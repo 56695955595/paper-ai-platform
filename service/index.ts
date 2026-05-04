@@ -29,28 +29,12 @@ export const sendWorkflowMessage = async (
     onWorkflowFinished: IOnWorkflowFinished
   },
 ) => {
-  const res: any = await post('workflows/run', {
+  return ssePost('workflows/run', {
     body: {
       ...body,
-      response_mode: 'blocking',
+      response_mode: 'streaming',
     },
-  })
-
-  const workflowRunId = res?.workflow_run_id || res?.data?.id || res?.task_id || `workflow_${Date.now()}`
-
-  onWorkflowStarted?.({
-    workflow_run_id: workflowRunId,
-  } as any)
-
-  onWorkflowFinished?.({
-    data: {
-      ...(res?.data || {}),
-      outputs: res?.data?.outputs || res?.outputs || {},
-      error: res?.data?.error || res?.error,
-    },
-  } as any)
-
-  return res
+  }, { onNodeStarted, onWorkflowStarted, onWorkflowFinished, onNodeFinished })
 }
 export const fetchAppParams = async () => {
   return get('parameters')

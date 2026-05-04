@@ -745,30 +745,3 @@
   font-size: 10px !important;
 }
 
-
-/* 表单标签更清楚 */
-label {
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  color: #172033 !important;
-}
-
-/* 输入框更宽更有质感 */
-input,
-textarea,
-[role="combobox"],
-[class*="input"],
-[class*="select"] {
-  min-height: 48px !important;
-  border-radius: 16px !important;
-}
-
-/* 运行按钮更明显 */
-button[type="submit"],
-button[class*="bg-primary"],
-button[class*="bg-blue"] {
-  min-height: 42px !important;
-  padding-left: 18px !important;
-  padding-right: 18px !important;
-  border-radius: 14px !important;
-}

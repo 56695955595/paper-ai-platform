@@ -887,3 +887,33 @@ button:active {
     display: none !important;
   }
 }
+/* =========================================================
+   紧急清理：关闭旧版伪元素工作台，解决重影、歪卡片、文字叠加
+========================================================= */
+
+.w-screen > div:last-child::before,
+.h-screen > div:last-child::before,
+.w-screen > div:last-child::after,
+.h-screen > div:last-child::after,
+.w-screen > div:last-child > div::before,
+.h-screen > div:last-child > div::before,
+.w-screen > div:last-child > div::after,
+.h-screen > div:last-child > div::after {
+  content: none !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 防止旧装饰层继续压到左侧 */
+.w-screen > div:last-child,
+.h-screen > div:last-child {
+  overflow: hidden !important;
+}
+
+/* 保证右侧新工作台在自己的区域里显示，不往左边乱跑 */
+.w-screen > div:last-child > *,
+.h-screen > div:last-child > * {
+  position: relative !important;
+  z-index: 2 !important;
+}

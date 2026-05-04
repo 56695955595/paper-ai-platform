@@ -1056,3 +1056,51 @@
 .aiWorkflowItem {
   min-height: 46px !important;
 }
+/* =========================================================
+   第十一阶段：修复左侧展示区与表单区重叠，稳定最终版
+========================================================= */
+
+.heroBanner {
+  height: auto !important;
+  min-height: 172px !important;
+  max-height: 172px !important;
+  overflow: hidden !important;
+}
+
+.heroDesc {
+  max-height: 42px !important;
+  overflow: hidden !important;
+}
+
+.heroCardRow {
+  margin-top: 7px !important;
+}
+
+.heroCard {
+  min-height: 58px !important;
+}
+
+.aiWorkflowPanel {
+  height: auto !important;
+  min-height: 92px !important;
+  max-height: 92px !important;
+  overflow: hidden !important;
+  margin-bottom: 14px !important;
+}
+
+.aiWorkflowLine {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.aiWorkflowItem {
+  min-height: 42px !important;
+}
+
+.aiWorkflowItem strong {
+  font-size: 10px !important;
+}
+
+.aiWorkflowItem span {
+  display: none !important;
+}

@@ -586,7 +586,7 @@ const TextGeneration = () => {
             onChange={setCurrTab}
           />
 
-          <div className='grow h-20 overflow-y-auto'>
+          <div className='grow overflow-y-auto pr-1'>
             <div className={cn(currTab === 'create' ? 'block' : 'hidden')}>
               <RunOnce
                 inputs={inputs}

@@ -933,3 +933,59 @@
 .aiWorkflowItem span {
   display: none !important;
 }
+/* =========================================================
+   第九阶段：最终压缩左侧展示卡，给表单更多空间
+========================================================= */
+
+.heroBanner {
+  padding: 12px 14px 10px !important;
+  margin-bottom: 8px !important;
+}
+
+.heroTitle {
+  font-size: 18px !important;
+}
+
+.heroDesc {
+  max-height: 32px !important;
+  line-height: 1.45 !important;
+}
+
+.heroTags {
+  display: none !important;
+}
+
+.heroCardRow {
+  margin-top: 8px !important;
+}
+
+.heroCard {
+  min-height: 56px !important;
+  padding: 8px 10px !important;
+}
+
+.heroCardLabel {
+  font-size: 8px !important;
+}
+
+.heroCardValue {
+  font-size: 14px !important;
+}
+
+.aiWorkflowPanel {
+  padding: 10px 12px 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.aiWorkflowTitle {
+  font-size: 14px !important;
+}
+
+.aiWorkflowLine {
+  gap: 5px !important;
+}
+
+.aiWorkflowItem {
+  min-height: 42px !important;
+  padding: 7px 8px !important;
+}

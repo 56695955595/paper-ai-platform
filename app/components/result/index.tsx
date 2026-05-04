@@ -218,16 +218,56 @@ const Result: FC<IResultProps> = ({
             setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
               draft.status = data.error ? WorkflowRunningStatus.Failed : WorkflowRunningStatus.Succeeded
             }))
-            if (!data.outputs)
-              setCompletionRes('')
-            else if (Object.keys(data.outputs).length > 1)
-              setCompletionRes(data.outputs)
-            else
-              setCompletionRes(data.outputs[Object.keys(data.outputs)[0]])
-            setResponsingFalse()
-            setMessageId(tempMessageId)
-            onCompleted(getCompletionRes(), taskId, true)
-            isEnd = true
+           const outputs = data.outputs || {}
+
+const outputValues = Object.values(outputs as Record<string, any>)
+
+const outputFiles = outputValues.flatMap((value: any) => {
+  if (Array.isArray(value))
+    return value.filter((item: any) => item && typeof item === 'object')
+
+  if (value && typeof value === 'object' && Array.isArray(value.files))
+    return value.files
+
+  return []
+})
+
+const outputText = outputValues.find((value: any) =>
+  typeof value === 'string' && value.trim(),
+) as string | undefined
+
+let finalRes = ''
+
+if (outputFiles.length > 0) {
+  finalRes = [
+    '论文文档已生成',
+    '',
+    ...outputFiles.map((file: any, index: number) => {
+      const fileName = file.name || file.filename || `论文文档_${index + 1}.docx`
+      const fileUrl = file.url || file.remote_url || file.download_url || ''
+
+      if (fileUrl)
+        return `📄 [${fileName}](${fileUrl})`
+
+      return `📄 ${fileName}`
+    }),
+  ].join('\n')
+}
+else if (outputText) {
+  finalRes = outputText
+}
+else if (Object.keys(outputs).length > 0) {
+  finalRes = JSON.stringify(outputs, null, 2)
+}
+else {
+  finalRes = '论文文档已生成，但前端未获取到可展示的下载链接。请前往 Dify 运行记录中下载生成文件。'
+}
+
+setCompletionRes(finalRes)
+setRespondingFalse()
+setMessageId(tempMessageId)
+onCompleted(finalRes, taskId, true)
+isEnd = true
           },
         },
       )

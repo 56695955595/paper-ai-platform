@@ -1104,3 +1104,58 @@
 .aiWorkflowItem span {
   display: none !important;
 }
+/* =========================================================
+   第十二阶段：最终稳定版，把左侧介绍区轻量化，避免遮挡表单
+========================================================= */
+
+.heroBanner {
+  min-height: 128px !important;
+  max-height: 128px !important;
+  padding: 14px 16px !important;
+  overflow: hidden !important;
+}
+
+.heroTitle {
+  font-size: 17px !important;
+  line-height: 1.2 !important;
+}
+
+.heroDesc {
+  max-height: 36px !important;
+  overflow: hidden !important;
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+}
+
+.heroTags {
+  display: none !important;
+}
+
+.heroCardRow {
+  display: none !important;
+}
+
+.aiWorkflowPanel {
+  min-height: 68px !important;
+  max-height: 68px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 12px !important;
+  overflow: hidden !important;
+}
+
+.aiWorkflowEyebrow {
+  font-size: 9px !important;
+}
+
+.aiWorkflowTitle {
+  font-size: 14px !important;
+}
+
+.aiWorkflowStatus {
+  padding: 3px 8px !important;
+  font-size: 9px !important;
+}
+
+.aiWorkflowLine {
+  display: none !important;
+}

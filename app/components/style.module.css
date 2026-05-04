@@ -989,3 +989,70 @@
   min-height: 42px !important;
   padding: 7px 8px !important;
 }
+/* =========================================================
+   第十阶段：修复左侧展示卡被裁切，保持紧凑但完整
+========================================================= */
+
+.heroBanner {
+  min-height: 150px !important;
+  padding: 14px 16px 12px !important;
+  overflow: visible !important;
+}
+
+.heroDesc {
+  max-height: none !important;
+  overflow: visible !important;
+  line-height: 1.5 !important;
+}
+
+.heroTags {
+  display: flex !important;
+  margin-top: 7px !important;
+  gap: 6px !important;
+}
+
+.heroTags span {
+  padding: 4px 8px !important;
+  font-size: 9px !important;
+}
+
+.heroCardRow {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin-top: 8px !important;
+  gap: 7px !important;
+}
+
+.heroCard {
+  min-height: 64px !important;
+  padding: 8px 9px !important;
+  overflow: hidden !important;
+}
+
+.heroCardLabel {
+  font-size: 8px !important;
+  margin-bottom: 3px !important;
+}
+
+.heroCardValue {
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+}
+
+.heroCardSub {
+  display: none !important;
+}
+
+.aiWorkflowPanel {
+  min-height: 105px !important;
+  overflow: visible !important;
+}
+
+.aiWorkflowLine {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.aiWorkflowItem {
+  min-height: 46px !important;
+}

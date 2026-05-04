@@ -917,3 +917,51 @@ button:active {
   position: relative !important;
   z-index: 2 !important;
 }
+/* =========================================================
+   第八阶段：表单控件高级化，全局安全版
+========================================================= */
+
+input,
+textarea,
+select {
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.2s ease !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(99, 102, 241, 0.72) !important;
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.12),
+    0 14px 34px rgba(79, 70, 229, 0.10) !important;
+  outline: none !important;
+}
+
+button {
+  border-radius: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.55);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.35);
+}

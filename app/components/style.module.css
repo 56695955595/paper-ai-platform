@@ -880,3 +880,71 @@
 .appIconSmall {
   box-shadow: 0 10px 24px rgba(79, 70, 229, 0.14) !important;
 }
+/* =========================================================
+   第七阶段：进一步压缩左侧展示区，让填写区域更靠上
+========================================================= */
+
+.heroBanner {
+  padding: 14px 16px 12px !important;
+  margin-bottom: 10px !important;
+  border-radius: 22px !important;
+}
+
+.heroDesc {
+  max-height: 38px !important;
+  overflow: hidden !important;
+}
+
+.heroTags {
+  margin-top: 8px !important;
+}
+
+.heroCardRow {
+  margin-top: 8px !important;
+}
+
+.heroCard {
+  min-height: 70px !important;
+  padding: 9px 10px !important;
+}
+
+.heroCardSub {
+  display: none !important;
+}
+
+.aiWorkflowPanel {
+  padding: 12px 14px 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.aiWorkflowHeader {
+  margin-bottom: 8px !important;
+}
+
+.aiWorkflowLine {
+  gap: 6px !important;
+}
+
+.aiWorkflowItem {
+  min-height: 48px !important;
+  padding: 8px 8px !important;
+}
+
+.aiWorkflowItem span {
+  display: none !important;
+}
+
+/* 让左侧滚动条更细、更不抢眼 */
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: rgba(99, 102, 241, 0.55) !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.45) !important;
+}

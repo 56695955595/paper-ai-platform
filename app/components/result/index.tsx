@@ -162,10 +162,12 @@ const Result: FC<IResultProps> = ({
     (async () => {
       await sleep(1000 * 60*7) // 1min timeout
       if (!isEnd) {
-        setResponsingFalse()
-        onCompleted(getCompletionRes(), taskId, false)
-        isTimeout = true
-      }
+  const timeoutMessage = '工作流仍在生成文档，可能正在进行 Word 文件转换。请稍等后刷新，或前往 Dify 运行记录下载生成文件。'
+  setCompletionRes(timeoutMessage)
+  setRespondingFalse()
+  onCompleted(timeoutMessage, taskId, false)
+  isTimeout = true
+}
     })()
 
     if (isWorkflow) {

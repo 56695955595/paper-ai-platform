@@ -933,18 +933,3 @@
 .aiWorkflowItem span {
   display: none !important;
 }
-
-/* 让左侧滚动条更细、更不抢眼 */
-::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 999px !important;
-  background: rgba(99, 102, 241, 0.55) !important;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(226, 232, 240, 0.45) !important;
-}

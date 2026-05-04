@@ -160,7 +160,7 @@ const Result: FC<IResultProps> = ({
     let isEnd = false
     let isTimeout = false;
     (async () => {
-      await sleep(1000 * 60) // 1min timeout
+      await sleep(1000 * 60*7) // 1min timeout
       if (!isEnd) {
         setResponsingFalse()
         onCompleted(getCompletionRes(), taskId, false)

@@ -745,11 +745,6 @@
   font-size: 10px !important;
 }
 
-/* 表单区域更突出 */
-[role="tablist"],
-[class*="tab"] {
-  margin-top: 8px !important;
-}
 
 /* 表单标签更清楚 */
 label {

@@ -61,6 +61,48 @@ const Result: FC<IResultProps> = ({
     completionResRef.current = res
     doSetCompletionRes(res)
   }
+  const parseDifyFileResult = (value: any) => {
+    if (!value)
+      return null
+
+    let parsed = value
+
+    if (typeof value === 'string') {
+      try {
+        parsed = JSON.parse(value)
+      }
+      catch {
+        return null
+      }
+    }
+
+    if (Array.isArray(parsed))
+      return parsed[0] || null
+
+    if (parsed?.url && parsed?.filename)
+      return parsed
+
+    if (parsed?.result) {
+      try {
+        const inner = typeof parsed.result === 'string'
+          ? JSON.parse(parsed.result)
+          : parsed.result
+
+        if (Array.isArray(inner))
+          return inner[0] || null
+
+        if (inner?.url && inner?.filename)
+          return inner
+      }
+      catch {
+        return null
+      }
+    }
+
+    return null
+  }
+
+
   const getCompletionRes = () => completionResRef.current
   const [workflowProcessData, doSetWorkflowProccessData] = useState<WorkflowProcess>()
   const workflowProcessDataRef = useRef<WorkflowProcess>()
@@ -160,14 +202,14 @@ const Result: FC<IResultProps> = ({
     let isEnd = false
     let isTimeout = false;
     (async () => {
-      await sleep(1000 * 60*7) // 1min timeout
+      await sleep(1000 * 60 * 7) // 1min timeout
       if (!isEnd) {
-  const timeoutMessage = '工作流仍在生成文档，可能正在进行 Word 文件转换。请稍等后刷新，或前往 Dify 运行记录下载生成文件。'
-  setCompletionRes(timeoutMessage)
-  setRespondingFalse()
-  onCompleted(timeoutMessage, taskId, false)
-  isTimeout = true
-}
+        const timeoutMessage = '工作流仍在生成文档，可能正在进行 Word 文件转换。请稍等后刷新，或前往 Dify 运行记录下载生成文件。'
+        setCompletionRes(timeoutMessage)
+        setRespondingFalse()
+        onCompleted(timeoutMessage, taskId, false)
+        isTimeout = true
+      }
     })()
 
     if (isWorkflow) {
@@ -220,56 +262,56 @@ const Result: FC<IResultProps> = ({
             setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
               draft.status = data.error ? WorkflowRunningStatus.Failed : WorkflowRunningStatus.Succeeded
             }))
-           const outputs = data.outputs || {}
+            const outputs = data.outputs || {}
 
-const outputValues = Object.values(outputs as Record<string, any>)
+            const outputValues = Object.values(outputs as Record<string, any>)
 
-const outputFiles = outputValues.flatMap((value: any) => {
-  if (Array.isArray(value))
-    return value.filter((item: any) => item && typeof item === 'object')
+            const outputFiles = outputValues.flatMap((value: any) => {
+              if (Array.isArray(value))
+                return value.filter((item: any) => item && typeof item === 'object')
 
-  if (value && typeof value === 'object' && Array.isArray(value.files))
-    return value.files
+              if (value && typeof value === 'object' && Array.isArray(value.files))
+                return value.files
 
-  return []
-})
+              return []
+            })
 
-const outputText = outputValues.find((value: any) =>
-  typeof value === 'string' && value.trim(),
-) as string | undefined
+            const outputText = outputValues.find((value: any) =>
+              typeof value === 'string' && value.trim(),
+            ) as string | undefined
 
-let finalRes = ''
+            let finalRes = ''
 
-if (outputFiles.length > 0) {
-  finalRes = [
-    '论文文档已生成',
-    '',
-    ...outputFiles.map((file: any, index: number) => {
-      const fileName = file.name || file.filename || `论文文档_${index + 1}.docx`
-      const fileUrl = file.url || file.remote_url || file.download_url || ''
+            if (outputFiles.length > 0) {
+              finalRes = [
+                '论文文档已生成',
+                '',
+                ...outputFiles.map((file: any, index: number) => {
+                  const fileName = file.name || file.filename || `论文文档_${index + 1}.docx`
+                  const fileUrl = file.url || file.remote_url || file.download_url || ''
 
-      if (fileUrl)
-        return `📄 [${fileName}](${fileUrl})`
+                  if (fileUrl)
+                    return `📄 [${fileName}](${fileUrl})`
 
-      return `📄 ${fileName}`
-    }),
-  ].join('\n')
-}
-else if (outputText) {
-  finalRes = outputText
-}
-else if (Object.keys(outputs).length > 0) {
-  finalRes = JSON.stringify(outputs, null, 2)
-}
-else {
-  finalRes = '论文文档已生成，但前端未获取到可展示的下载链接。请前往 Dify 运行记录中下载生成文件。'
-}
+                  return `📄 ${fileName}`
+                }),
+              ].join('\n')
+            }
+            else if (outputText) {
+              finalRes = outputText
+            }
+            else if (Object.keys(outputs).length > 0) {
+              finalRes = JSON.stringify(outputs, null, 2)
+            }
+            else {
+              finalRes = '论文文档已生成，但前端未获取到可展示的下载链接。请前往 Dify 运行记录中下载生成文件。'
+            }
 
-setCompletionRes(finalRes)
-setRespondingFalse()
-setMessageId(tempMessageId)
-onCompleted(finalRes, taskId, true)
-isEnd = true
+            setCompletionRes(finalRes)
+            setRespondingFalse()
+            setMessageId(tempMessageId)
+            onCompleted(finalRes, taskId, true)
+            isEnd = true
           },
         },
       )
@@ -312,23 +354,48 @@ isEnd = true
       handleSend()
   }, [controlRetry])
 
-  const renderTextGenerationRes = () => (
-    <TextGenerationRes
-      isWorkflow={isWorkflow}
-      workflowProcessData={workflowProcessData}
-      className='mt-3'
-      isError={isError}
-      onRetry={handleSend}
-      content={completionRes}
-      messageId={messageId}
-      isInWebApp
-      onFeedback={handleFeedback}
-      feedback={feedback}
-      isMobile={isMobile}
-      isLoading={isCallBatchAPI ? (!completionRes && isResponsing) : false}
-      taskId={isCallBatchAPI ? ((taskId as number) < 10 ? `0${taskId}` : `${taskId}`) : undefined}
-    />
-  )
+  const renderTextGenerationRes = () => {
+    const difyFileResult = parseDifyFileResult(completionRes)
+
+    return (
+      <>
+        {difyFileResult && (
+          <div className="mb-4 mt-3 rounded-2xl border border-green-200 bg-green-50 p-4 shadow-sm">
+            <div className="text-sm font-semibold text-green-700">
+              文档生成成功
+            </div>
+            <div className="mt-1 break-all text-sm text-gray-700">
+              {difyFileResult.filename}
+            </div>
+            <a
+              className="mt-3 inline-flex rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+              href={difyFileResult.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              下载 Word 文档
+            </a>
+          </div>
+        )}
+
+        <TextGenerationRes
+          isWorkflow={isWorkflow}
+          workflowProcessData={workflowProcessData}
+          className='mt-3'
+          isError={isError}
+          onRetry={handleSend}
+          content={completionRes}
+          messageId={messageId}
+          isInWebApp
+          onFeedback={handleFeedback}
+          feedback={feedback}
+          isMobile={isMobile}
+          isLoading={isCallBatchAPI ? (!completionRes && isResponsing) : false}
+          taskId={isCallBatchAPI ? ((taskId as number) < 10 ? `0${taskId}` : `${taskId}`) : undefined}
+        />
+      </>
+    )
+  }
 
   return (
     <div className={cn(isNoData && !isCallBatchAPI && 'h-full')}>

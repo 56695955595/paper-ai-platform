@@ -4,11 +4,11 @@ export const API_KEY = `${process.env.NEXT_PUBLIC_APP_KEY}`
 export const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
 export const IS_WORKFLOW = `${process.env.NEXT_PUBLIC_APP_TYPE_WORKFLOW}` === 'true'
 export const APP_INFO: AppInfo = {
- title: '高校论文智能优化平台',
- description: '依据高校论文规范与标准模板，对上传论文进行结构诊断、内容优化与格式规范化处理。',
-  copyright: '',
-  privacy_policy: '',
- default_language: 'zh-Hans',
+    title: '智理校园',
+    description: '面向AIGC时代的高校学术合规与科研安全审计平台',
+    copyright: '',
+    privacy_policy: '',
+    default_language: 'zh-Hans',
 }
 
 export const API_PREFIX = `${process.env.NEXT_PUBLIC_API_PREFIX || '/api'}`

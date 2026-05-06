@@ -206,7 +206,7 @@ const Result: FC<IResultProps> = ({
       if (!isEnd) {
         const timeoutMessage = '工作流仍在生成文档，可能正在进行 Word 文件转换。请稍等后刷新，或前往 Dify 运行记录下载生成文件。'
         setCompletionRes(timeoutMessage)
-        setRespondingFalse()
+        setResponsingFalse()
         onCompleted(timeoutMessage, taskId, false)
         isTimeout = true
       }
@@ -308,7 +308,7 @@ const Result: FC<IResultProps> = ({
             }
 
             setCompletionRes(finalRes)
-            setRespondingFalse()
+            setResponsingFalse()
             setMessageId(tempMessageId)
             onCompleted(finalRes, taskId, true)
             isEnd = true

@@ -43,3 +43,21 @@ export const fetchAppParams = async () => {
 export const updateFeedback = async ({ url, body }: { url: string; body: Feedbacktype }) => {
   return post(url, { body })
 }
+
+export const uploadFile = async (file: File, user = 'web-user') => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('user', user)
+
+  const res = await fetch('/api/files/upload', {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!res.ok) {
+    const errorText = await res.text()
+    throw new Error(errorText || '文件上传失败')
+  }
+
+  return res.json()
+}

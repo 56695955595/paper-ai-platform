@@ -9,6 +9,7 @@ import type { PromptConfig, VisionFile, VisionSettings } from '@/types/app'
 import Button from '@/app/components/base/button'
 import { DEFAULT_VALUE_MAX_LEN } from '@/config'
 import TextGenerationImageUploader from '@/app/components/base/image-uploader/text-generation-image-uploader'
+import { uploadFile } from '@/service'
 
 export type IRunOnceProps = {
   promptConfig: PromptConfig
@@ -45,6 +46,42 @@ const RunOnce: FC<IRunOnceProps> = ({
             <div className='w-full mt-4' key={item.key}>
               <label className='text-gray-900 text-sm font-medium'>{item.name}</label>
               <div className='mt-2'>
+                {item.key === 'paper_file' && (
+                  <div className="mt-2">
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt,.md"
+                      className="block w-full text-sm text-gray-700 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-indigo-700"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file)
+                          return
+
+                        try {
+                          const uploaded = await uploadFile(file)
+
+                          onInputsChange({
+                            ...inputs,
+                            [item.key]: {
+                              type: 'document',
+                              transfer_method: 'local_file',
+                              upload_file_id: uploaded.id,
+                            },
+                          })
+                        }
+                        catch (error) {
+                          console.error(error)
+                          alert('文件上传失败，请重新上传')
+                        }
+                      }}
+                    />
+                    {inputs[item.key] && (
+                      <div className="mt-2 text-xs text-green-600">
+                        文件已上传，点击运行即可开始处理。
+                      </div>
+                    )}
+                  </div>
+                )}
                 {item.type === 'select' && (
                   <Select
                     className='w-full'
@@ -55,7 +92,7 @@ const RunOnce: FC<IRunOnceProps> = ({
                     bgClassName='bg-gray-50'
                   />
                 )}
-                {item.type === 'string' && (
+                {item.key !== 'paper_file' && item.type === 'string' && (
                   <input
                     type="text"
                     className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 "

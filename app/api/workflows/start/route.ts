@@ -6,7 +6,9 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-const API_BASE_URL = API_PREFIX || 'https://api.dify.ai/v1'
+const API_BASE_URL = API_PREFIX?.startsWith('http')
+  ? API_PREFIX
+  : 'https://api.dify.ai/v1'
 
 export async function POST(request: NextRequest) {
   try {

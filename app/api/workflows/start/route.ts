@@ -1,12 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { getInfo } from '@/app/api/utils/common'
+import { API_KEY, API_PREFIX } from '@/config'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_PREFIX || process.env.API_PREFIX || 'https://api.dify.ai/v1'
-const API_KEY = process.env.NEXT_PUBLIC_APP_API_KEY || process.env.APP_API_KEY || ''
+const API_BASE_URL = API_PREFIX || 'https://api.dify.ai/v1'
 
 export async function POST(request: NextRequest) {
   try {

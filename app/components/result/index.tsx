@@ -295,147 +295,61 @@ const Result: FC<IResultProps> = ({
     setResponsingTrue()
     let isEnd = false
     let isTimeout = false;
-        (async () => {
-      await sleep(1000 * 55)
-
-      if (!isEnd) {
-        isTimeout = true
-
-        if (tempMessageId) {
-          const pollingMessage = '论文仍在生成中，系统已切换为后台查询模式，请稍候……'
-          setCompletionRes(pollingMessage)
-          pollWorkflowResult(tempMessageId, taskId)
-        }
-        else {
-          const timeoutMessage = '论文仍在生成中，但暂未获取到任务编号，请稍后前往 Dify 日志查看结果。'
-          setCompletionRes(timeoutMessage)
-          setResponsingFalse()
-          onCompleted(timeoutMessage, taskId, false)
-        }
-      }
-    })()
     if (isWorkflow) {
-      sendWorkflowMessage(
-        data,
-        {
-          onWorkflowStarted: ({ workflow_run_id }) => {
-            tempMessageId = workflow_run_id
-            setWorkflowProccessData({
-              status: WorkflowRunningStatus.Running,
-              tracing: [],
-              expand: false,
-            })
-            setResponsingFalse()
+      try {
+        const startRes = await fetch('/api/workflows/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          onNodeStarted: ({ data }) => {
-            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
-              draft.expand = true
-              draft.tracing!.push({
-                ...data,
-                status: NodeRunningStatus.Running,
-                expand: true,
-              } as any)
-            }))
-          },
-          onNodeFinished: ({ data }) => {
-            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
-              const currentIndex = draft.tracing!.findIndex(trace => trace.node_id === data.node_id)
-              if (currentIndex > -1 && draft.tracing) {
-                draft.tracing[currentIndex] = {
-                  ...(draft.tracing[currentIndex].extras
-                    ? { extras: draft.tracing[currentIndex].extras }
-                    : {}),
-                  ...data,
-                  expand: !!data.error,
-                } as any
-              }
-            }))
-          },
-          onWorkflowFinished: ({ data }) => {
-            if (isTimeout)
-              return
-            if (data.error) {
-              notify({ type: 'error', message: data.error })
-              setResponsingFalse()
-              onCompleted(getCompletionRes(), taskId, false)
-              isEnd = true
-              return
-            }
-            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
-              draft.status = data.error ? WorkflowRunningStatus.Failed : WorkflowRunningStatus.Succeeded
-            }))
-            const outputs = data.outputs || {}
+          body: JSON.stringify(data),
+        })
 
-            const outputValues = Object.values(outputs as Record<string, any>)
-
-            const outputFiles = outputValues.flatMap((value: any) => {
-              if (Array.isArray(value))
-                return value.filter((item: any) => item && typeof item === 'object')
-
-              if (value && typeof value === 'object' && Array.isArray(value.files))
-                return value.files
-
-              return []
-            })
-
-            const outputText = outputValues.find((value: any) =>
-              typeof value === 'string' && value.trim(),
-            ) as string | undefined
-
-            let finalRes = ''
-
-            if (outputFiles.length > 0) {
-              finalRes = [
-                '论文文档已生成',
-                '',
-                ...outputFiles.map((file: any, index: number) => {
-                  const fileName = file.name || file.filename || `论文文档_${index + 1}.docx`
-                  const fileUrl = file.url || file.remote_url || file.download_url || ''
-
-                  if (fileUrl)
-                    return `📄 [${fileName}](${fileUrl})`
-
-                  return `📄 ${fileName}`
-                }),
-              ].join('\n')
-            }
-            else if (outputText) {
-              finalRes = outputText
-            }
-            else if (Object.keys(outputs).length > 0) {
-              finalRes = JSON.stringify(outputs, null, 2)
-            }
-            else {
-              finalRes = '论文文档已生成，但前端未获取到可展示的下载链接。请前往 Dify 运行记录中下载生成文件。'
-            }
-
-            setCompletionRes(finalRes)
-            setResponsingFalse()
-            setMessageId(tempMessageId)
-            onCompleted(finalRes, taskId, true)
-            isEnd = true
-          },
-        },
-           ).catch((error) => {
-        console.error('send workflow message error:', error)
-
-        if (isEnd)
-          return
-
-        if (tempMessageId) {
-          isTimeout = true
-          const pollingMessage = '连接中断，但论文任务可能仍在后台生成，系统正在尝试查询结果……'
-          setCompletionRes(pollingMessage)
-          pollWorkflowResult(tempMessageId, taskId)
+        if (!startRes.ok) {
+          const errorText = await startRes.text()
+          const errorMessage = `工作流启动失败：${errorText}`
+          setCompletionRes(errorMessage)
+          setResponsingFalse()
+          onCompleted(errorMessage, taskId, false)
+          isEnd = true
           return
         }
 
-        const errorMessage = '工作流连接中断，且未获取到任务编号，请前往 Dify 日志查看运行结果。'
+        const startData = await startRes.json()
+        const workflowRunId = startData.workflow_run_id
+
+        if (!workflowRunId) {
+          const errorMessage = '工作流已提交，但未获取到任务编号，请前往 Dify 日志查看结果。'
+          setCompletionRes(errorMessage)
+          setResponsingFalse()
+          onCompleted(errorMessage, taskId, false)
+          isEnd = true
+          return
+        }
+
+        tempMessageId = workflowRunId
+
+        setWorkflowProccessData({
+          status: WorkflowRunningStatus.Running,
+          tracing: [],
+          expand: false,
+        })
+
+        const pollingMessage = '论文任务已开始，系统正在后台生成并自动查询结果，请稍候……'
+        setCompletionRes(pollingMessage)
+
+        await pollWorkflowResult(workflowRunId, taskId)
+        isEnd = true
+      }
+      catch (error: any) {
+        console.error('workflow start request error:', error)
+
+        const errorMessage = error?.message || '工作流启动失败，请稍后重试。'
         setCompletionRes(errorMessage)
         setResponsingFalse()
         onCompleted(errorMessage, taskId, false)
         isEnd = true
-      })
+      }
     }
     else {
       sendCompletionMessage(data, {

@@ -128,7 +128,101 @@ const Result: FC<IResultProps> = ({
   const logError = (message: string) => {
     notify({ type: 'error', message })
   }
+    const buildFinalResultFromOutputs = (outputs: Record<string, any>) => {
+    const outputValues = Object.values(outputs || {})
 
+    const outputFiles = outputValues.flatMap((value: any) => {
+      if (Array.isArray(value))
+        return value.filter((item: any) => item && typeof item === 'object')
+
+      if (value && typeof value === 'object' && Array.isArray(value.files))
+        return value.files
+
+      return []
+    })
+
+    const outputText = outputValues.find((value: any) =>
+      typeof value === 'string' && value.trim(),
+    ) as string | undefined
+
+    if (outputFiles.length > 0) {
+      return [
+        '论文文档已生成',
+        '',
+        ...outputFiles.map((file: any, index: number) => {
+          const fileName = file.name || file.filename || `论文文档_${index + 1}.docx`
+          const fileUrl = file.url || file.remote_url || file.download_url || ''
+
+          if (fileUrl)
+            return `📄 [${fileName}](${fileUrl})`
+
+          return `📄 ${fileName}`
+        }),
+      ].join('\n')
+    }
+
+    if (outputText)
+      return outputText
+
+    if (Object.keys(outputs || {}).length > 0)
+      return JSON.stringify(outputs, null, 2)
+
+    return ''
+  }
+
+  const pollWorkflowResult = async (runId: string, currentTaskId?: number) => {
+    const maxTimes = 60
+    const interval = 5000
+
+    for (let i = 0; i < maxTimes; i++) {
+      await sleep(interval)
+
+      try {
+        const res = await fetch(`/api/workflows/status?id=${encodeURIComponent(runId)}`, {
+          cache: 'no-store',
+        })
+
+        if (!res.ok)
+          continue
+
+        const data = await res.json()
+
+        if (data.status === 'succeeded') {
+          const finalRes = buildFinalResultFromOutputs(data.outputs || {})
+
+          if (finalRes) {
+            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
+              draft.status = WorkflowRunningStatus.Succeeded
+            }))
+
+            setCompletionRes(finalRes)
+            setResponsingFalse()
+            setMessageId(runId)
+            onCompleted(finalRes, currentTaskId, true)
+            return
+          }
+        }
+
+        if (data.status === 'failed' || data.status === 'stopped') {
+          const failMessage = data.error || '工作流运行失败，请前往 Dify 日志查看具体错误。'
+          setCompletionRes(failMessage)
+          setResponsingFalse()
+          setMessageId(runId)
+          onCompleted(failMessage, currentTaskId, false)
+          return
+        }
+      }
+      catch (error) {
+        console.error('poll workflow result error:', error)
+      }
+    }
+
+    const waitingMessage = '论文仍在后台生成中，请稍后刷新页面或前往 Dify 日志查看结果。'
+    setCompletionRes(waitingMessage)
+    setResponsingFalse()
+    setMessageId(runId)
+    onCompleted(waitingMessage, currentTaskId, false)
+  }
   const checkCanSend = () => {
     // batch will check outer
     if (isCallBatchAPI)
@@ -201,17 +295,25 @@ const Result: FC<IResultProps> = ({
     setResponsingTrue()
     let isEnd = false
     let isTimeout = false;
-    (async () => {
-      await sleep(1000 * 60 * 7) // 1min timeout
+        (async () => {
+      await sleep(1000 * 55)
+
       if (!isEnd) {
-        const timeoutMessage = '工作流仍在生成文档，可能正在进行 Word 文件转换。请稍等后刷新，或前往 Dify 运行记录下载生成文件。'
-        setCompletionRes(timeoutMessage)
-        setResponsingFalse()
-        onCompleted(timeoutMessage, taskId, false)
         isTimeout = true
+
+        if (tempMessageId) {
+          const pollingMessage = '论文仍在生成中，系统已切换为后台查询模式，请稍候……'
+          setCompletionRes(pollingMessage)
+          pollWorkflowResult(tempMessageId, taskId)
+        }
+        else {
+          const timeoutMessage = '论文仍在生成中，但暂未获取到任务编号，请稍后前往 Dify 日志查看结果。'
+          setCompletionRes(timeoutMessage)
+          setResponsingFalse()
+          onCompleted(timeoutMessage, taskId, false)
+        }
       }
     })()
-
     if (isWorkflow) {
       sendWorkflowMessage(
         data,
@@ -314,7 +416,26 @@ const Result: FC<IResultProps> = ({
             isEnd = true
           },
         },
-      )
+           ).catch((error) => {
+        console.error('send workflow message error:', error)
+
+        if (isEnd)
+          return
+
+        if (tempMessageId) {
+          isTimeout = true
+          const pollingMessage = '连接中断，但论文任务可能仍在后台生成，系统正在尝试查询结果……'
+          setCompletionRes(pollingMessage)
+          pollWorkflowResult(tempMessageId, taskId)
+          return
+        }
+
+        const errorMessage = '工作流连接中断，且未获取到任务编号，请前往 Dify 日志查看运行结果。'
+        setCompletionRes(errorMessage)
+        setResponsingFalse()
+        onCompleted(errorMessage, taskId, false)
+        isEnd = true
+      })
     }
     else {
       sendCompletionMessage(data, {

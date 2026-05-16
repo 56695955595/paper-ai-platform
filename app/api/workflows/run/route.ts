@@ -1,9 +1,12 @@
 import type { NextRequest } from 'next/server'
-import { client, getInfo } from '@/app/api/utils/common'
+import { getInfo } from '@/app/api/utils/common'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_PREFIX || process.env.API_PREFIX || 'https://api.dify.ai/v1'
+const API_KEY = process.env.NEXT_PUBLIC_APP_API_KEY || process.env.APP_API_KEY || ''
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,13 +19,44 @@ export async function POST(request: NextRequest) {
 
     const { user } = getInfo(request)
 
-    const res = await client.runWorkflow(inputs, user, true, files)
+    if (!API_KEY) {
+      return Response.json(
+        { error: 'Missing Dify API key' },
+        { status: 500 },
+      )
+    }
 
-    return new Response(res.data as any, {
+    const difyRes = await fetch(`${API_BASE_URL}/workflows/run`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        inputs: inputs || {},
+        files: files || [],
+        response_mode: 'streaming',
+        user,
+      }),
+      cache: 'no-store',
+    })
+
+    if (!difyRes.ok || !difyRes.body) {
+      const text = await difyRes.text()
+      return new Response(text || 'Dify workflow run failed', {
+        status: difyRes.status,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      })
+    }
+
+    return new Response(difyRes.body, {
       headers: {
         'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
         Connection: 'keep-alive',
+        'X-Accel-Buffering': 'no',
       },
     })
   }

@@ -58,18 +58,24 @@ const RunOnce: FC<IRunOnceProps> = ({
                           return
 
                         try {
-             if (file.name.toLowerCase().endsWith('.txt')) {
-  const text = await file.text()
+const uploaded = await uploadFile(file)
+console.log('Dify uploaded file:', uploaded)
 
-  onInputsChange({
-    ...inputs,
-    paper_content: text,
-    [item.key]: '',
-  })
+const uploadFileId = uploaded?.id || uploaded?.upload_file_id || uploaded?.data?.id
 
-  alert('TXT 文件已读取为正文内容，将直接走文字处理路线。')
+if (!uploadFileId) {
+  alert('文件上传成功，但没有拿到 upload_file_id，请打开控制台查看 Dify uploaded file')
   return
 }
+
+onInputsChange({
+  ...inputs,
+  [item.key]: {
+    type: 'document',
+    transfer_method: 'local_file',
+    upload_file_id: uploadFileId,
+  },
+})
 
 const uploaded = await uploadFile(file)
 console.log('Dify uploaded file:', uploaded)

@@ -58,24 +58,6 @@ const RunOnce: FC<IRunOnceProps> = ({
                           return
 
                         try {
-const uploaded = await uploadFile(file)
-console.log('Dify uploaded file:', uploaded)
-
-const uploadFileId = uploaded?.id || uploaded?.upload_file_id || uploaded?.data?.id
-
-if (!uploadFileId) {
-  alert('文件上传成功，但没有拿到 upload_file_id，请打开控制台查看 Dify uploaded file')
-  return
-}
-
-onInputsChange({
-  ...inputs,
-  [item.key]: {
-    type: 'document',
-    transfer_method: 'local_file',
-    upload_file_id: uploadFileId,
-  },
-})
 
 const uploaded = await uploadFile(file)
 console.log('Dify uploaded file:', uploaded)

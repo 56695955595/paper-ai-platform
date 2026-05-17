@@ -57,8 +57,29 @@ const RunOnce: FC<IRunOnceProps> = ({
                         if (!file)
                           return
 try {
+  const shouldReadTxtAsText =
+    file.name.toLowerCase().endsWith('.txt')
+    && inputs.process_mode === '论文排版'
+
+  if (shouldReadTxtAsText) {
+    const text = await file.text()
+
+    onInputsChange({
+      ...inputs,
+      paper_content: text,
+      [item.key]: {
+        type: 'document',
+        transfer_method: 'local_file',
+        upload_file_id: 'txt-local-file',
+      },
+    })
+
+    alert('TXT 文件已读取为正文内容，将走论文排版文字路线。')
+    return
+  }
+
   const uploaded = await uploadFile(file)
-  console.log('Dify uploaded file:', uploaded)
+  console.log('Dify uploaded file object:', uploaded)
 
   const uploadFileId = uploaded?.id || uploaded?.upload_file_id || uploaded?.data?.id
 

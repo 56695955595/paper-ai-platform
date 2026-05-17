@@ -56,32 +56,30 @@ const RunOnce: FC<IRunOnceProps> = ({
                         const file = e.target.files?.[0]
                         if (!file)
                           return
+try {
+  const uploaded = await uploadFile(file)
+  console.log('Dify uploaded file:', uploaded)
 
-                        try {
+  const uploadFileId = uploaded?.id || uploaded?.upload_file_id || uploaded?.data?.id
 
-const uploaded = await uploadFile(file)
-console.log('Dify uploaded file:', uploaded)
+  if (!uploadFileId) {
+    alert('文件上传成功，但没有拿到 upload_file_id，请打开控制台查看 Dify uploaded file')
+    return
+  }
 
-const uploadFileId = uploaded?.id || uploaded?.upload_file_id || uploaded?.data?.id
-
-if (!uploadFileId) {
-  alert('文件上传成功，但没有拿到 upload_file_id，请打开控制台查看 Dify uploaded file')
-  return
+  onInputsChange({
+    ...inputs,
+    [item.key]: {
+      type: 'document',
+      transfer_method: 'local_file',
+      upload_file_id: uploadFileId,
+    },
+  })
 }
-
-onInputsChange({
-  ...inputs,
-  [item.key]: {
-    type: 'document',
-    transfer_method: 'local_file',
-    upload_file_id: uploadFileId,
-  },
-})
-                        }
-                        catch (error) {
-                          console.error(error)
-                          alert('文件上传失败，请重新上传')
-                        }
+catch (error) {
+  console.error(error)
+  alert('文件上传失败，请重新上传')
+}
                       }}
                     />
                     {inputs[item.key] && (

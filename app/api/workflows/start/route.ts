@@ -4,7 +4,7 @@ import { API_KEY, API_PREFIX } from '@/config'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 const API_BASE_URL = API_PREFIX?.startsWith('http')
   ? API_PREFIX
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     let buffer = ''
 
     const startedAt = Date.now()
-    const timeout = 25000
+    const timeout = 55000
 
     while (Date.now() - startedAt < timeout) {
       const { value, done } = await reader.read()

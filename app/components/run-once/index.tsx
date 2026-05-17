@@ -58,16 +58,29 @@ const RunOnce: FC<IRunOnceProps> = ({
                           return
 
                         try {
-                          const uploaded = await uploadFile(file)
+             if (file.name.toLowerCase().endsWith('.txt')) {
+  const text = await file.text()
 
-                          onInputsChange({
-                            ...inputs,
-                            [item.key]: {
-                              type: 'document',
-                              transfer_method: 'local_file',
-                              upload_file_id: uploaded.id,
-                            },
-                          })
+  onInputsChange({
+    ...inputs,
+    paper_content: text,
+    [item.key]: '',
+  })
+
+  alert('TXT 文件已读取为正文内容，将直接走文字处理路线。')
+  return
+}
+
+const uploaded = await uploadFile(file)
+
+onInputsChange({
+  ...inputs,
+  [item.key]: {
+    type: 'document',
+    transfer_method: 'local_file',
+    upload_file_id: uploaded.id,
+  },
+})
                         }
                         catch (error) {
                           console.error(error)

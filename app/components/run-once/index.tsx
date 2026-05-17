@@ -72,6 +72,7 @@ const RunOnce: FC<IRunOnceProps> = ({
 }
 
 const uploaded = await uploadFile(file)
+console.log('Dify uploaded file:', uploaded)
 
 onInputsChange({
   ...inputs,

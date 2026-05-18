@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   PlayIcon,
@@ -28,7 +28,19 @@ const RunOnce: FC<IRunOnceProps> = ({
   onVisionFilesChange,
 }) => {
   const { t } = useTranslation()
+useEffect(() => {
+  const pendingText = window.localStorage.getItem('pending_paper_content')
+  if (!pendingText)
+    return
 
+  window.localStorage.removeItem('pending_paper_content')
+
+  onInputsChange({
+    ...inputs,
+    paper_content: pendingText,
+    paper_file: '',
+  })
+}, [])
   const onClear = () => {
     const newInputs: Record<string, any> = {}
     promptConfig.prompt_variables.forEach((item) => {

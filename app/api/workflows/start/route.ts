@@ -1,20 +1,33 @@
 import type { NextRequest } from 'next/server'
-import { getInfo } from '@/app/api/utils/common'
-import { API_KEY, API_PREFIX } from '@/config'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const maxDuration = 30
 
-const API_BASE_URL = API_PREFIX?.startsWith('http')
-  ? API_PREFIX
-  : 'https://api.dify.ai/v1'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_PREFIX || process.env.API_PREFIX || 'https://api.dify.ai/v1'
+const API_KEY = process.env.NEXT_PUBLIC_APP_API_KEY || process.env.APP_API_KEY || ''
+
+function extractWorkflowRunId(text: string) {
+  const patterns = [
+    /"workflow_run_id"\s*:\s*"([^"]+)"/,
+    /workflow_run_id['"]?\s*[:=]\s*['"]([^'"]+)['"]/,
+  ]
+
+  for (const pattern of patterns) {
+    const match = text.match(pattern)
+    if (match?.[1])
+      return match[1]
+  }
+
+  return ''
+}
 
 export async function POST(request: NextRequest) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 12000)
+
   try {
     const body = await request.json()
-    const { inputs, files } = body
-    const { user } = getInfo(request)
 
     if (!API_KEY) {
       return Response.json(
@@ -30,32 +43,35 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        inputs: inputs || {},
-        files: files || [],
+        ...body,
         response_mode: 'streaming',
-        user,
+        user: body.user || 'web-user',
       }),
-      cache: 'no-store',
+      signal: controller.signal,
     })
 
-    if (!difyRes.ok || !difyRes.body) {
-      const text = await difyRes.text()
-      return new Response(text || 'Dify workflow start failed', {
-        status: difyRes.status,
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-      })
+    if (!difyRes.ok) {
+      const errorText = await difyRes.text()
+      clearTimeout(timeout)
+      return Response.json(
+        { error: errorText || 'Dify workflow start failed' },
+        { status: difyRes.status },
+      )
+    }
+
+    if (!difyRes.body) {
+      clearTimeout(timeout)
+      return Response.json(
+        { error: 'Dify response body is empty' },
+        { status: 500 },
+      )
     }
 
     const reader = difyRes.body.getReader()
     const decoder = new TextDecoder()
     let buffer = ''
 
-    const startedAt = Date.now()
-    const timeout = 55000
-
-    while (Date.now() - startedAt < timeout) {
+    while (true) {
       const { value, done } = await reader.read()
 
       if (done)
@@ -63,31 +79,50 @@ export async function POST(request: NextRequest) {
 
       buffer += decoder.decode(value, { stream: true })
 
-      const match = buffer.match(/"workflow_run_id"\s*:\s*"([^"]+)"/)
+      const workflowRunId = extractWorkflowRunId(buffer)
 
-      if (match?.[1]) {
+      if (workflowRunId) {
+        try {
+          await reader.cancel()
+        }
+        catch {}
+
+        clearTimeout(timeout)
+
         return Response.json({
-          workflow_run_id: match[1],
+          workflow_run_id: workflowRunId,
           status: 'started',
         })
       }
+
+      if (buffer.length > 20000)
+        buffer = buffer.slice(-10000)
     }
+
+    clearTimeout(timeout)
 
     return Response.json(
       {
         error: 'Workflow started, but workflow_run_id was not captured.',
-        raw: buffer.slice(0, 1000),
+        raw: buffer.slice(0, 2000),
       },
       { status: 500 },
     )
   }
   catch (error: any) {
+    clearTimeout(timeout)
+
+    if (error?.name === 'AbortError') {
+      return Response.json(
+        { error: 'Workflow start timeout before workflow_run_id was captured.' },
+        { status: 504 },
+      )
+    }
+
     console.error('workflow start error:', error)
 
     return Response.json(
-      {
-        error: error?.message || 'Workflow start failed',
-      },
+      { error: error?.message || 'Workflow start failed' },
       { status: 500 },
     )
   }

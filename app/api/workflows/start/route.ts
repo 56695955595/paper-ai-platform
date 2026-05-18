@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 const API_BASE_URL = (
   process.env.API_PREFIX
@@ -35,7 +35,7 @@ function extractWorkflowRunId(text: string) {
 
 export async function POST(request: NextRequest) {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 12000)
+  const timeout = setTimeout(() => controller.abort(), 55000)
 
   try {
     const body = await request.json()

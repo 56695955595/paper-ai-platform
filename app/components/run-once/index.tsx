@@ -75,9 +75,7 @@ useEffect(() => {
                         if (!file)
                           return
 try {
-  const shouldReadTxtAsText =
-    file.name.toLowerCase().endsWith('.txt')
-    && inputs.process_mode === '论文排版'
+const shouldReadTxtAsText = false
 
  if (shouldReadTxtAsText) {
   const text = await file.text()

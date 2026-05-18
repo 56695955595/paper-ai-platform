@@ -4,8 +4,16 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_PREFIX || process.env.API_PREFIX || 'https://api.dify.ai/v1'
-const API_KEY = process.env.NEXT_PUBLIC_APP_API_KEY || process.env.APP_API_KEY || ''
+const API_BASE_URL =
+  process.env.API_PREFIX
+  || process.env.NEXT_PUBLIC_API_PREFIX
+  || process.env.NEXT_PUBLIC_API_URL
+  || 'https://api.dify.ai/v1'
+const API_KEY =
+  process.env.APP_API_KEY
+  || process.env.NEXT_PUBLIC_APP_API_KEY
+  || process.env.NEXT_PUBLIC_APP_KEY
+  || ''
 
 function extractWorkflowRunId(text: string) {
   const patterns = [

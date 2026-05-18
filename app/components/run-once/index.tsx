@@ -33,22 +33,21 @@ useEffect(() => {
   if (!pendingText)
     return
 
+  const hasPaperContentInput = promptConfig.prompt_variables.some(item => item.key === 'paper_content')
+  if (!hasPaperContentInput)
+    return
+
   window.sessionStorage.removeItem('pending_paper_content')
 
-  const fillText = () => {
-    onInputsChange({
-      ...inputs,
-      process_mode: '论文排版',
-      paper_content: pendingText,
-      paper_file: '',
-    })
-  }
-
-  fillText()
-
-  setTimeout(fillText, 300)
-  setTimeout(fillText, 800)
-}, [])
+  onInputsChange({
+    ...inputs,
+    process_mode: inputs.process_mode || '论文排版',
+    paper_type: inputs.paper_type || '硕士论文',
+    rewrite_mode: inputs.rewrite_mode || '深度优化（允许补充）',
+    paper_content: pendingText,
+    paper_file: '',
+  })
+}, [promptConfig.prompt_variables.length])
   const onClear = () => {
     const newInputs: Record<string, any> = {}
     promptConfig.prompt_variables.forEach((item) => {

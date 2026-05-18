@@ -29,17 +29,25 @@ const RunOnce: FC<IRunOnceProps> = ({
 }) => {
   const { t } = useTranslation()
 useEffect(() => {
-  const pendingText = window.localStorage.getItem('pending_paper_content')
+  const pendingText = window.sessionStorage.getItem('pending_paper_content')
   if (!pendingText)
     return
 
-  window.localStorage.removeItem('pending_paper_content')
+  window.sessionStorage.removeItem('pending_paper_content')
 
-  onInputsChange({
-    ...inputs,
-    paper_content: pendingText,
-    paper_file: '',
-  })
+  const fillText = () => {
+    onInputsChange({
+      ...inputs,
+      process_mode: '论文排版',
+      paper_content: pendingText,
+      paper_file: '',
+    })
+  }
+
+  fillText()
+
+  setTimeout(fillText, 300)
+  setTimeout(fillText, 800)
 }, [])
   const onClear = () => {
     const newInputs: Record<string, any> = {}
@@ -73,20 +81,18 @@ try {
     file.name.toLowerCase().endsWith('.txt')
     && inputs.process_mode === '论文排版'
 
-  if (shouldReadTxtAsText) {
-    const text = await file.text()
+ if (shouldReadTxtAsText) {
+  const text = await file.text()
 
-    onInputsChange({
-      ...inputs,
-      paper_content: text,
-      [item.key]: '',
-    })
+  window.sessionStorage.setItem('pending_paper_content', text)
 
-    e.target.value = ''
+  e.target.value = ''
 
-    alert('TXT 内容已提取到正文，文件选择已自动清空，将走论文排版文字路线。')
-    return
-  }
+  alert('TXT 内容已提取成功，页面将自动刷新。刷新后正文会自动填入，请直接点击运行。')
+
+  window.location.reload()
+  return
+}
 
   const uploaded = await uploadFile(file)
   console.log('Dify uploaded file object:', uploaded)

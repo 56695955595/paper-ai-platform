@@ -4,16 +4,19 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-const API_BASE_URL =
+const API_BASE_URL = (
   process.env.API_PREFIX
   || process.env.NEXT_PUBLIC_API_PREFIX
   || process.env.NEXT_PUBLIC_API_URL
   || 'https://api.dify.ai/v1'
-const API_KEY =
+).replace(/\/$/, '')
+
+const API_KEY = (
   process.env.APP_API_KEY
   || process.env.NEXT_PUBLIC_APP_API_KEY
   || process.env.NEXT_PUBLIC_APP_KEY
   || ''
+).trim()
 
 function extractWorkflowRunId(text: string) {
   const patterns = [
@@ -37,12 +40,19 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    if (!API_KEY) {
-      return Response.json(
-        { error: 'Missing Dify API key' },
-        { status: 500 },
-      )
-    }
+   if (!API_KEY) {
+  return Response.json(
+    {
+      error: 'Missing Dify API key',
+      checked: {
+        APP_API_KEY: !!process.env.APP_API_KEY,
+        NEXT_PUBLIC_APP_API_KEY: !!process.env.NEXT_PUBLIC_APP_API_KEY,
+        NEXT_PUBLIC_APP_KEY: !!process.env.NEXT_PUBLIC_APP_KEY,
+      },
+    },
+    { status: 500 },
+  )
+}
 
     const difyRes = await fetch(`${API_BASE_URL}/workflows/run`, {
       method: 'POST',

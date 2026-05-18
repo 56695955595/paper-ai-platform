@@ -67,14 +67,12 @@ try {
     onInputsChange({
       ...inputs,
       paper_content: text,
-      [item.key]: {
-        type: 'document',
-        transfer_method: 'local_file',
-        upload_file_id: 'txt-local-file',
-      },
+      [item.key]: '',
     })
 
-    alert('TXT 文件已读取为正文内容，将走论文排版文字路线。')
+    e.target.value = ''
+
+    alert('TXT 内容已提取到正文，文件选择已自动清空，将走论文排版文字路线。')
     return
   }
 

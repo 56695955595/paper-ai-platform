@@ -61,6 +61,46 @@ const Result: FC<IResultProps> = ({
     completionResRef.current = res
     doSetCompletionRes(res)
   }
+  const handleDownloadDocx = async () => {
+  try {
+    const text = completionRes || completionResRef.current || ''
+    if (!text.trim()) {
+      alert('暂无可导出的论文内容')
+      return
+    }
+
+    const res = await fetch('/api/export-docx', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        filename: '论文题目',
+      }),
+    })
+
+    if (!res.ok) {
+      const errorText = await res.text()
+      alert(`导出失败：${errorText}`)
+      return
+    }
+
+    const blob = await res.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = '论文题目.docx'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url)
+  }
+  catch (error) {
+    console.error(error)
+    alert('导出 Word 文档失败')
+  }
+}
   const parseDifyFileResult = (value: any) => {
     if (!value)
       return null
@@ -412,7 +452,17 @@ const Result: FC<IResultProps> = ({
             </a>
           </div>
         )}
-
+{completionRes && (
+  <div className="mb-4 mt-3">
+    <button
+      type="button"
+      onClick={handleDownloadDocx}
+      className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700"
+    >
+      下载 Word 文档
+    </button>
+  </div>
+)}
         <TextGenerationRes
           isWorkflow={isWorkflow}
           workflowProcessData={workflowProcessData}

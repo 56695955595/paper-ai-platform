@@ -337,13 +337,25 @@ const Result: FC<IResultProps> = ({
     let isTimeout = false;
     if (isWorkflow) {
       try {
-        const startRes = await fetch('/api/workflows/start', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
+       const sendData = {
+  ...data,
+  inputs: {
+    ...data.inputs,
+    ...(data.inputs?.process_mode === '论文排版' && data.inputs?.paper_content
+      ? { paper_file: '' }
+      : {}),
+  },
+}
+
+console.log('workflow sendData:', sendData)
+
+const startRes = await fetch('/api/workflows/start', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(sendData),
+})
 
         if (!startRes.ok) {
           const errorText = await startRes.text()

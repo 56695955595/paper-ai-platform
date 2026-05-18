@@ -337,15 +337,21 @@ const Result: FC<IResultProps> = ({
     let isTimeout = false;
     if (isWorkflow) {
       try {
-       const sendData = {
-  ...data,
-  inputs: {
-    ...data.inputs,
-    ...(data.inputs?.process_mode === '论文排版' && data.inputs?.paper_content
-      ? { paper_file: '' }
-      : {}),
-  },
+const rawInputs = data.inputs || {}
+
+let cleanInputs = { ...rawInputs }
+
+if (rawInputs.process_mode === '论文排版' && rawInputs.paper_content) {
+  const { paper_file, ...restInputs } = cleanInputs
+  cleanInputs = restInputs
 }
+
+const sendData = {
+  ...data,
+  inputs: cleanInputs,
+}
+
+console.log('workflow sendData:', sendData)
 
 console.log('workflow sendData:', sendData)
 

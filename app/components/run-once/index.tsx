@@ -45,7 +45,6 @@ useEffect(() => {
     paper_type: inputs.paper_type || '硕士论文',
     rewrite_mode: inputs.rewrite_mode || '深度优化（允许补充）',
     paper_content: pendingText,
-    paper_file: '',
   })
 }, [promptConfig.prompt_variables.length])
   const onClear = () => {
